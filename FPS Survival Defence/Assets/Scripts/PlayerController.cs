@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,6 +8,8 @@ public class PlayerController : MonoBehaviour
     private float walkSpeed;
     [SerializeField]
     private float runSpeed;
+    [SerializeField]
+    private float crouchSpeed;
     private float applySpeed;
 
     // 점프 변수
@@ -15,7 +18,14 @@ public class PlayerController : MonoBehaviour
 
     // 상태 변수
     private bool isRun = false;
+    private bool isCrouch = false;
     private bool isGround = true;
+
+    // 웅크리기 정도 조정 변수
+    [SerializeField]
+    private float crouchPosY;
+    private float originPosY;
+    private float applyCrouchPosY;
 
     // 카메라 회전 변수
     [SerializeField]
@@ -34,14 +44,19 @@ public class PlayerController : MonoBehaviour
     {
         myRigid = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-        applySpeed = walkSpeed;
-    }
 
+        applySpeed = walkSpeed;
+
+        originPosY = theCamera.transform.localPosition.y;
+        applyCrouchPosY = originPosY;
+    }
+    
     void Update()
     {
         IsGround();
         TryJump();
         TryRun();
+        TryCrouch();
         Move();
         CameraRotation();
         CharacterRotation();
@@ -62,6 +77,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        if (isCrouch)
+            Crouch();
+
         myRigid.linearVelocity = transform.up * jumpForce;
     }
 
@@ -87,6 +105,52 @@ public class PlayerController : MonoBehaviour
     {
         isRun = false;
         applySpeed = walkSpeed;
+    }
+
+    private void TryCrouch()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            Crouch();
+        }
+    }
+
+    private void Crouch()
+    {
+        isCrouch = !isCrouch;
+        if (isCrouch)
+        {
+            applySpeed = crouchSpeed;
+            applyCrouchPosY = crouchPosY;
+        }
+        else
+        {
+            applySpeed = walkSpeed;
+            applyCrouchPosY = originPosY;
+        }
+
+        StartCoroutine(CrouchCoroutine());
+    }
+
+    IEnumerator CrouchCoroutine()
+    {
+        float _posY = theCamera.transform.localPosition.y;
+        int count = 0;
+
+        while (_posY != applyCrouchPosY)
+        {
+            count++;
+
+            _posY = Mathf.Lerp(_posY, applyCrouchPosY, 0.3f);
+            theCamera.transform.localPosition = new Vector3(0, _posY, 0);
+
+            if (count > 15)
+                break;
+
+            yield return null;
+        }
+
+        theCamera.transform.localPosition = new Vector3(0, applyCrouchPosY, 0);
     }
 
     private void Move()
