@@ -5,6 +5,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float walkSpeed;
 
+    [SerializeField]
+    private float lookSensitivity;
+    [SerializeField]
+    private float cameraRotationLimit;
+    private float currentCameraRotationX = 0;
+
+    [SerializeField]
+    private Camera theCamera;
+
     private Rigidbody myRigid;
 
     void Start()
@@ -15,6 +24,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
+        CameraRotation();
+        CharacterRotation();
     }
 
     private void Move()
@@ -28,5 +39,22 @@ public class PlayerController : MonoBehaviour
         Vector3 _velocity = (_moveHorizontal + _moveVertical).normalized * walkSpeed;
 
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
+    }
+
+    private void CameraRotation()
+    {
+        float _xRotation = Input.GetAxisRaw("Mouse Y");
+        float _cameraRotationX = _xRotation * lookSensitivity;
+        currentCameraRotationX -= _cameraRotationX;
+        currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit);
+
+        theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0, 0);
+    }
+
+    private void CharacterRotation()
+    {
+        float _yRotation = Input.GetAxisRaw("Mouse X");
+        Vector3 _characterRotationY = new Vector3(0, _yRotation, 0) * lookSensitivity;
+        myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
     }
 }

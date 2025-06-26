@@ -684,10 +684,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2115604207}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b95855a4c1876804c96945be3899e038, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e2ef38229ac9b44e95ce5aab847b76a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 3
+  lookSensitivity: 3
+  cameraRotationLimit: 45
+  theCamera: {fileID: 330585545}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
