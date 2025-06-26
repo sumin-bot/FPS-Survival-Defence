@@ -9,8 +9,13 @@ public class PlayerController : MonoBehaviour
     private float runSpeed;
     private float applySpeed;
 
-    // 속도 상태 변수
-    private bool isRun;
+    // 점프 변수
+    [SerializeField]
+    private float jumpForce;
+
+    // 상태 변수
+    private bool isRun = false;
+    private bool isGround = true;
 
     // 카메라 회전 변수
     [SerializeField]
@@ -23,19 +28,41 @@ public class PlayerController : MonoBehaviour
     private Camera theCamera;
 
     private Rigidbody myRigid;
+    private CapsuleCollider capsuleCollider;
 
     void Start()
     {
         myRigid = GetComponent<Rigidbody>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         applySpeed = walkSpeed;
     }
 
     void Update()
     {
+        IsGround();
+        TryJump();
         TryRun();
         Move();
         CameraRotation();
         CharacterRotation();
+    }
+
+    private void IsGround()
+    {
+        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f);
+    }
+
+    private void TryJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGround)
+        {
+            Jump();
+        }
+    }
+
+    private void Jump()
+    {
+        myRigid.linearVelocity = transform.up * jumpForce;
     }
 
     private void TryRun()
