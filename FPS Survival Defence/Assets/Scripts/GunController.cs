@@ -6,6 +6,14 @@ public class GunController : MonoBehaviour
     private Gun currentGun;
 
     private float currentFireRate;
+
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     void Update()
     {
         GunFireRateCalc();
@@ -36,6 +44,14 @@ public class GunController : MonoBehaviour
 
     private void Shoot()
     {
+        PlaySE(currentGun.fire_Sound);
+        currentGun.muzzleFlash.Play();
         Debug.Log("ÃÑ¾Ë ¹ß»çÇÔ");
+    }
+
+    private void PlaySE(AudioClip _clip)
+    {
+        audioSource.clip = _clip;
+        audioSource.Play();
     }
 }
