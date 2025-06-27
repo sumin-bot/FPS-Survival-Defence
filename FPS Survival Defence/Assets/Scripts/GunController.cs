@@ -21,6 +21,7 @@ public class GunController : MonoBehaviour
     {
         GunFireRateCalc();
         TryFire();
+        TryReload();
     }
 
     private void GunFireRateCalc()
@@ -57,6 +58,14 @@ public class GunController : MonoBehaviour
         PlaySE(currentGun.fire_Sound);
         currentGun.muzzleFlash.Play();
         Debug.Log("ÃÑ¾Ë ¹ß»çÇÔ");
+    }
+
+    private void TryReload()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && !isReload && currentGun.currentBulletCount < currentGun.reloadBulletCount)
+        {
+            StartCoroutine(ReloadCoroutine());
+        }
     }
 
     IEnumerator ReloadCoroutine()
