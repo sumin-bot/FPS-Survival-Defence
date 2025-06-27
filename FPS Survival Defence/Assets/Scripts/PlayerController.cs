@@ -39,11 +39,13 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody myRigid;
     private CapsuleCollider capsuleCollider;
+    private GunController gunController;
 
     void Start()
     {
         myRigid = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        gunController = FindObjectOfType<GunController>();
 
         applySpeed = walkSpeed;
 
@@ -97,6 +99,11 @@ public class PlayerController : MonoBehaviour
 
     private void Running()
     {
+        if (isCrouch)
+            Crouch();
+
+        gunController.CancelFineSight();
+
         isRun = true;
         applySpeed = runSpeed;
     }
