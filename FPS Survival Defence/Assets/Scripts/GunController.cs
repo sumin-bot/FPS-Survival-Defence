@@ -9,6 +9,10 @@ public class GunController : MonoBehaviour
     private float currentFireRate;
 
     private bool isReload = false;
+    private bool isFineSightMode = false;
+
+    [SerializeField]
+    private Vector3 originPos;
 
     private AudioSource audioSource;
 
@@ -22,6 +26,7 @@ public class GunController : MonoBehaviour
         GunFireRateCalc();
         TryFire();
         TryReload();
+        TryFineSight();
     }
 
     private void GunFireRateCalc()
@@ -92,6 +97,53 @@ public class GunController : MonoBehaviour
             }
 
             isReload = false;
+        }
+        else
+        {
+            Debug.Log("소유한 총알이 없습니다.");
+        }
+    }
+
+    private void TryFineSight()
+    {
+        if (Input.GetButtonDown("Fire2"))
+        {
+            FineSight();
+        }
+    }
+
+    private void FineSight()
+    {
+        isFineSightMode = !isFineSightMode;
+        currentGun.anim.SetBool("FineSightMode", isFineSightMode);
+
+        if (isFineSightMode)
+        {
+            StopAllCoroutines();
+            StartCoroutine(FineSightActivateCoroutine());
+        }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(FineSightDeactivateCoroutine());
+        }
+    }
+
+    IEnumerator FineSightActivateCoroutine()
+    {
+        while (currentGun.transform.localPosition != currentGun.fineSightOriginPos)
+        {
+            currentGun.transform.localPosition = Vector3.Lerp(currentGun.transform.localPosition, currentGun.fineSightOriginPos, 0.2f);
+            yield return null;
+        }
+    }
+
+    IEnumerator FineSightDeactivateCoroutine()
+    {
+        while (currentGun.transform.localPosition != originPos)
+        {
+            currentGun.transform.localPosition = Vector3.Lerp(currentGun.transform.localPosition, originPos, 0.2f);
+            yield return null;
         }
     }
 
