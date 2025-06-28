@@ -17,9 +17,13 @@ public class PlayerController : MonoBehaviour
     private float jumpForce;
 
     // 상태 변수
+    private bool isWalk = false;
     private bool isRun = false;
     private bool isCrouch = false;
     private bool isGround = true;
+
+    // 움직임 체크 변수
+    private Vector3 lastPos;
 
     // 웅크리기 정도 조정 변수
     [SerializeField]
@@ -40,12 +44,14 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigid;
     private CapsuleCollider capsuleCollider;
     private GunController gunController;
+    private Crosshair crosshair;
 
     void Start()
     {
         myRigid = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         gunController = FindObjectOfType<GunController>();
+        crosshair = FindObjectOfType<Crosshair>();
 
         applySpeed = walkSpeed;
 
@@ -60,15 +66,19 @@ public class PlayerController : MonoBehaviour
         TryRun();
         TryCrouch();
         Move();
+        MoveCheck();
         CameraRotation();
         CharacterRotation();
     }
 
+    // 지면 체크
     private void IsGround()
     {
         isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f);
+        crosshair.RunningAnimatoin(!isGround);
     }
 
+    // 점프 시도
     private void TryJump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
@@ -77,6 +87,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 점프
     private void Jump()
     {
         if (isCrouch)
@@ -85,6 +96,7 @@ public class PlayerController : MonoBehaviour
         myRigid.linearVelocity = transform.up * jumpForce;
     }
 
+    // 달리기 시도
     private void TryRun()
     {
         if (Input.GetKey(KeyCode.LeftShift))
@@ -97,6 +109,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 달리기
     private void Running()
     {
         if (isCrouch)
@@ -105,15 +118,19 @@ public class PlayerController : MonoBehaviour
         gunController.CancelFineSight();
 
         isRun = true;
+        crosshair.RunningAnimatoin(isRun);
         applySpeed = runSpeed;
     }
 
+    // 달리기 취소
     private void RunningCancel()
     {
         isRun = false;
+        crosshair.RunningAnimatoin(isRun);
         applySpeed = walkSpeed;
     }
 
+    // 웅크리기 시도
     private void TryCrouch()
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -122,9 +139,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 웅크리기
     private void Crouch()
     {
         isCrouch = !isCrouch;
+        crosshair.CrouchingAnimatoin(isCrouch);
         if (isCrouch)
         {
             applySpeed = crouchSpeed;
@@ -139,6 +158,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(CrouchCoroutine());
     }
 
+    // 부드러운 동작 실행
     IEnumerator CrouchCoroutine()
     {
         float _posY = theCamera.transform.localPosition.y;
@@ -160,6 +180,7 @@ public class PlayerController : MonoBehaviour
         theCamera.transform.localPosition = new Vector3(0, applyCrouchPosY, 0);
     }
 
+    // 움직임 실행
     private void Move()
     {
         float _moveDirX = Input.GetAxisRaw("Horizontal");
@@ -173,6 +194,22 @@ public class PlayerController : MonoBehaviour
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
     }
 
+    private void MoveCheck()
+    {
+        if (!isRun && !isCrouch && isGround)
+        {
+            if (Vector3.Distance(lastPos, transform.position) >= 0.01f)
+                isWalk = true;
+            else
+                isWalk = false;
+
+            crosshair.WalkingAnimatoin(isWalk);
+
+            lastPos = transform.position;
+        }
+    }
+
+    // 상하 카메라 회전
     private void CameraRotation()
     {
         float _xRotation = Input.GetAxisRaw("Mouse Y");
@@ -183,6 +220,7 @@ public class PlayerController : MonoBehaviour
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0, 0);
     }
 
+    // 좌우 캐릭터 회전
     private void CharacterRotation()
     {
         float _yRotation = Input.GetAxisRaw("Mouse X");

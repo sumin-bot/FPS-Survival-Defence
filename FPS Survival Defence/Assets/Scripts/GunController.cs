@@ -27,6 +27,7 @@ public class GunController : MonoBehaviour
 
     [SerializeField]
     private Camera theCam;
+    private Crosshair crosshair;
 
     [SerializeField]
     private GameObject hitEffectPrefab;
@@ -35,6 +36,7 @@ public class GunController : MonoBehaviour
     {
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
+        crosshair = FindObjectOfType<Crosshair>();
     }
 
     void Update()
@@ -81,6 +83,7 @@ public class GunController : MonoBehaviour
     // 발사 후 계산
     private void Shoot()
     {
+        crosshair.FireAnimation();
         currentGun.currentBulletCount--;
         currentFireRate = currentGun.fireRate;
         PlaySE(currentGun.fire_Sound);
@@ -93,10 +96,14 @@ public class GunController : MonoBehaviour
 
     private void Hit()
     {
-        if (Physics.Raycast(theCam.transform.position, theCam.transform.forward, out hitInfo, currentGun.range))
+        if (Physics.Raycast(theCam.transform.position, theCam.transform.forward + 
+            new Vector3(Random.Range(-crosshair.GetAccuracy() -currentGun.accuracy, crosshair.GetAccuracy() + currentGun.accuracy),
+            Random.Range(-crosshair.GetAccuracy() - currentGun.accuracy, crosshair.GetAccuracy() + currentGun.accuracy),
+            0)
+            , out hitInfo, currentGun.range))
         {
             var clone = Instantiate(hitEffectPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-            Destroy(clone, 2);
+            Destroy(clone, 2f);
         }
     }
 
@@ -164,6 +171,7 @@ public class GunController : MonoBehaviour
     {
         isFineSightMode = !isFineSightMode;
         currentGun.anim.SetBool("FineSightMode", isFineSightMode);
+        crosshair.FineSightAnimatoin(isFineSightMode);
 
         if (isFineSightMode)
         {
@@ -247,5 +255,10 @@ public class GunController : MonoBehaviour
     public Gun GetGun()
     {
         return currentGun;
+    }
+
+    public bool GetFineSightMode()
+    {
+        return isFineSightMode;
     }
 }
