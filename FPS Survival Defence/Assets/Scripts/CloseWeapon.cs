@@ -1,8 +1,14 @@
 using UnityEngine;
 
-public class Hand : MonoBehaviour
+public class CloseWeapon : MonoBehaviour
 {
-    public string handName; // 무기 구분 변수
+    public string closeWeaponName; // 무기 구분 변수
+
+    // 웨폰 유형
+    public bool isHand;
+    public bool isAxe;
+    public bool isPickaxe;
+
     public float range;
     public int damage;
     public float workSpeed;

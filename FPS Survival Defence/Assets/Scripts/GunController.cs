@@ -4,7 +4,7 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     // È°¼ÍÈ­ ¿©ºÎ
-    public static bool isActivate = true;
+    public static bool isActivate = false;
 
     // ÇöÀç ÀåÂøµÈ ÃÑ
     [SerializeField]
@@ -40,11 +40,6 @@ public class GunController : MonoBehaviour
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
         crosshair = FindObjectOfType<Crosshair>();
-
-
-        WeaponManager.currentWeapon = currentGun.GetComponent<Transform>();
-        WeaponManager.currentWeaponAnim = currentGun.anim;
-
     }
 
     void Update()
