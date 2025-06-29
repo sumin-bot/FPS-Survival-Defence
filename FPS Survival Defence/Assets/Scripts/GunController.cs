@@ -37,10 +37,13 @@ public class GunController : MonoBehaviour
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
         crosshair = FindObjectOfType<Crosshair>();
+<<<<<<< HEAD
 
         WeaponManager.currentWeapon = currentGun.GetComponent<Transform>();
         WeaponManager.currentWeaponAnim = currentGun.anim;
 
+=======
+>>>>>>> 8fd0a1263cebde7a20e7b7b7d0320a0c80c77c1c
     }
 
     void Update()
@@ -275,6 +278,7 @@ public class GunController : MonoBehaviour
     {
         return isFineSightMode;
     }
+<<<<<<< HEAD
 
     public void GunChange(Gun _gun)
     {
@@ -288,4 +292,6 @@ public class GunController : MonoBehaviour
         currentGun.transform.localPosition = Vector3.zero;
         currentGun.gameObject.SetActive(true);
     }
+=======
+>>>>>>> 8fd0a1263cebde7a20e7b7b7d0320a0c80c77c1c
 }
