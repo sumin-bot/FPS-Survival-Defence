@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
+    // 활셩화 여부
+    public static bool isActivate = true;
+
     // 현재 장착된 총
     [SerializeField]
     private Gun currentGun;
@@ -37,21 +40,22 @@ public class GunController : MonoBehaviour
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
         crosshair = FindObjectOfType<Crosshair>();
-<<<<<<< HEAD
+
 
         WeaponManager.currentWeapon = currentGun.GetComponent<Transform>();
         WeaponManager.currentWeaponAnim = currentGun.anim;
 
-=======
->>>>>>> 8fd0a1263cebde7a20e7b7b7d0320a0c80c77c1c
     }
 
     void Update()
     {
-        GunFireRateCalc();
-        TryFire();
-        TryReload();
-        TryFineSight();
+        if (isActivate)
+        {
+            GunFireRateCalc();
+            TryFire();
+            TryReload();
+            TryFineSight();
+        }
     }
 
     // 연사 속도 재계산
@@ -278,7 +282,7 @@ public class GunController : MonoBehaviour
     {
         return isFineSightMode;
     }
-<<<<<<< HEAD
+
 
     public void GunChange(Gun _gun)
     {
@@ -291,7 +295,7 @@ public class GunController : MonoBehaviour
 
         currentGun.transform.localPosition = Vector3.zero;
         currentGun.gameObject.SetActive(true);
+        isActivate = true;
     }
-=======
->>>>>>> 8fd0a1263cebde7a20e7b7b7d0320a0c80c77c1c
+
 }
