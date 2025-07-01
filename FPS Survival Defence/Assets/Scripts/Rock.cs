@@ -18,8 +18,17 @@ public class Rock : MonoBehaviour
     [SerializeField]
     private GameObject go_effect_prefabs;
 
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip effect_sound;
+    [SerializeField]
+    private AudioClip effect_sound2;
+
     public void Mining()
     {
+        audioSource.clip = effect_sound;
+        audioSource.Play();
         var clone = Instantiate(go_effect_prefabs, col.bounds.center, Quaternion.identity);
         Destroy(clone, destroyTime);
 
@@ -33,6 +42,9 @@ public class Rock : MonoBehaviour
 
     private void Destruction()
     {
+        audioSource.clip = effect_sound2;
+        audioSource.Play();
+
         col.enabled = false;
         Destroy(go_rock);
 
