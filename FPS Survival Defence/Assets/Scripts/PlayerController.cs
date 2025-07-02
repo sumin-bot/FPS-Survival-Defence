@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider capsuleCollider;
     private GunController gunController;
     private Crosshair crosshair;
+    private StatusController statusController;
 
     void Start()
     {
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
         gunController = FindObjectOfType<GunController>();
         crosshair = FindObjectOfType<Crosshair>();
+        statusController = FindObjectOfType<StatusController>();
 
         applySpeed = walkSpeed;
 
@@ -92,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isCrouch)
             Crouch();
-
+        statusController.DecreaseStamina(100);
         myRigid.linearVelocity = transform.up * jumpForce;
     }
 
@@ -119,6 +121,7 @@ public class PlayerController : MonoBehaviour
 
         isRun = true;
         crosshair.RunningAnimatoin(isRun);
+        statusController.DecreaseStamina(10);
         applySpeed = runSpeed;
     }
 
