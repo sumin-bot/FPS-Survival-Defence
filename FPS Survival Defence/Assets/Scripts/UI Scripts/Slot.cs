@@ -4,8 +4,6 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    private Vector3 originPos;
-
     public Item item;
     public int itemCount;
     public Image itemImage;
@@ -19,7 +17,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
     private void Start()
     {
-        originPos = transform.position;
         weaponManager = FindObjectOfType<WeaponManager>();
     }
 
