@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
+    private Vector3 originPos;
+
     public Item item;
     public int itemCount;
     public Image itemImage;
@@ -17,6 +19,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
     private void Start()
     {
+        originPos = transform.position;
         weaponManager = FindObjectOfType<WeaponManager>();
     }
 
@@ -92,17 +95,27 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (item != null)
+        {
+            DragSlot.instance.dragSlot = this;
+            DragSlot.instance.DragSetImage(itemImage);
 
+            DragSlot.instance.transform.position = eventData.position;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-
+        if (item != null)
+        {
+            DragSlot.instance.transform.position = eventData.position;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-
+        DragSlot.instance.SetColor(0);
+        DragSlot.instance.dragSlot = null;
     }
 
     public void OnDrop(PointerEventData eventData)
