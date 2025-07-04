@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Slot : MonoBehaviour
+public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     public Item item;
     public int itemCount;
@@ -11,6 +12,13 @@ public class Slot : MonoBehaviour
     private Text text_Count;
     [SerializeField]
     private GameObject go_CountImage;
+
+    private WeaponManager weaponManager;
+
+    private void Start()
+    {
+        weaponManager = FindObjectOfType<WeaponManager>();
+    }
 
     // 이미지 투명도 조절
     private void SetColor(float _alpha)
@@ -61,5 +69,44 @@ public class Slot : MonoBehaviour
 
         text_Count.text = "0";
         go_CountImage.SetActive(false);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (item != null)
+            {
+                if (item.itemType == Item.ItemType.Equipment)
+                {
+                    StartCoroutine(weaponManager.ChangeWeaponCoroutine(item.weaponType, item.itemName));
+                }
+                else
+                {
+                    Debug.Log(item.itemName + " 을 사용했습니다.");
+                    SetSlotCount(-1);
+                }
+            }
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+
     }
 }
