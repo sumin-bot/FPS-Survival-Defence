@@ -120,6 +120,20 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (DragSlot.instance.dragSlot != null)
+            ChangeSlot();
+    }
 
+    private void ChangeSlot()
+    {
+        Item _tempItem = item;
+        int _tempItemCount = itemCount;
+
+        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
+        
+        if (_tempItem != null)
+            DragSlot.instance.dragSlot.AddItem(_tempItem, _tempItemCount);
+        else
+            DragSlot.instance.dragSlot.ClearSlot();
     }
 }
