@@ -159,6 +159,24 @@ public class StatusController : MonoBehaviour
         }
     }
 
+    public void IncreaseSP(int _count)
+    {
+        if (currentSp + _count < sp)
+            currentSp += _count;
+        else
+            currentSp = sp;
+    }
+
+    public void DecreaseSP(int _count)
+    {
+        currentSp -= _count;
+
+        if (currentSp <= 0)
+        {
+            Debug.Log("캐릭터의 sp가 0이 되었습니다!!");
+        }
+    }
+
     public void IncreaseDP(int _count)
     {
         if (currentDp + _count < dp)
