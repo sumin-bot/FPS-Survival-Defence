@@ -15,7 +15,7 @@ public class Slot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, IPo
 
     private ItemEffectDatabase ItemEffectDatabase;
 
-    private void Start()
+    void Start()
     {
         ItemEffectDatabase = FindObjectOfType<ItemEffectDatabase>();
     }
@@ -132,7 +132,7 @@ public class Slot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, IPo
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (item != null)
-            ItemEffectDatabase.ShowToolTip(item);
+            ItemEffectDatabase.ShowToolTip(item, transform.position);
     }
 
     public void OnPointerExit(PointerEventData eventData)
