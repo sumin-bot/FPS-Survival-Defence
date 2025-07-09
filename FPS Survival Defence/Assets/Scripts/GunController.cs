@@ -29,6 +29,9 @@ public class GunController : MonoBehaviour
     private RaycastHit hitInfo;
 
     [SerializeField]
+    private LayerMask layerMask;
+
+    [SerializeField]
     private Camera theCam;
     private Crosshair crosshair;
 
@@ -106,7 +109,7 @@ public class GunController : MonoBehaviour
             new Vector3(Random.Range(-crosshair.GetAccuracy() -currentGun.accuracy, crosshair.GetAccuracy() + currentGun.accuracy),
             Random.Range(-crosshair.GetAccuracy() - currentGun.accuracy, crosshair.GetAccuracy() + currentGun.accuracy),
             0)
-            , out hitInfo, currentGun.range))
+            , out hitInfo, currentGun.range, layerMask))
         {
             var clone = Instantiate(hitEffectPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             Destroy(clone, 2f);
