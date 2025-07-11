@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Animal : MonoBehaviour
 {
@@ -13,9 +14,8 @@ public class Animal : MonoBehaviour
     protected float runSpeed;
     [SerializeField]
     protected float turningSpeed;
-    protected float applySpeed;
 
-    protected Vector3 direction;
+    protected Vector3 destination;
 
     protected bool isAction;
     protected bool isWalking;
@@ -37,6 +37,7 @@ public class Animal : MonoBehaviour
     [SerializeField]
     protected BoxCollider boxCol;
     protected AudioSource audioSource;
+    protected NavMeshAgent nav;
 
     [SerializeField]
     protected AudioClip[] sound_Normal;
@@ -47,6 +48,7 @@ public class Animal : MonoBehaviour
 
     protected void Start()
     {
+        nav = GetComponent<NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
         currentTime = waitTime;
         isAction = true;
@@ -57,7 +59,6 @@ public class Animal : MonoBehaviour
         if (!isDead)
         {
             Move();
-            Rotation();
             ElapseTime();
         }
     }
@@ -65,17 +66,7 @@ public class Animal : MonoBehaviour
     protected void Move()
     {
         if (isWalking || isRunning)
-            rigid.MovePosition(transform.position + transform.forward * applySpeed * Time.deltaTime);
-
-    }
-
-    protected void Rotation()
-    {
-        if (isWalking || isRunning)
-        {
-            Vector3 _rotation = Vector3.Lerp(transform.eulerAngles, new Vector3(0f, direction.y, 0f), turningSpeed);
-            rigid.MoveRotation(Quaternion.Euler(_rotation));
-        }
+            nav.SetDestination(transform.position + destination * 5f);
     }
 
     protected void ElapseTime()
@@ -91,16 +82,17 @@ public class Animal : MonoBehaviour
     protected virtual void ReSet()
     {
         isWalking = false; isRunning = false; isAction = true;
-        applySpeed = walkSpeed;
+        nav.speed = walkSpeed;
+        nav.ResetPath();
         anim.SetBool("Walking", isWalking); anim.SetBool("Running", isRunning);
-        direction.Set(0f, Random.Range(0f, 360f), 0);
+        destination.Set(Random.Range(-0.2f, 0.2f), 0f, Random.Range(0.5f, 1f));
     }
 
     protected void TryWalk()
     {
         isWalking = true;
         anim.SetBool("Walking", isWalking);
-        applySpeed = walkSpeed;
+        nav.speed = walkSpeed;
         currentTime = walkTime;
         Debug.Log("°È±â");
     }
