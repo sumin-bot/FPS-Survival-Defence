@@ -17,6 +17,7 @@ public class Animal : MonoBehaviour
 
     protected Vector3 destination;
 
+    // 상태 변수
     protected bool isAction;
     protected bool isWalking;
     protected bool isRunning;
