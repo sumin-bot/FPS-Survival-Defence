@@ -66,18 +66,22 @@ public class CraftManual : MonoBehaviour
 
     private void OpenWindow()
     {
+        GameManager.isOpenCraftManual = true;
         isActivated = true;
         go_BaseUI.SetActive(true);
     }
 
     private void CloseWindow()
     {
+        GameManager.isOpenCraftManual = false;
         isActivated = false;
         go_BaseUI.SetActive(false);
     }
 
     private void PreviewPositionUpdate()
     {
+        GameManager.isOpenCraftManual = false;
+
         if (Physics.Raycast(tf_Player.position, tf_Player.forward, out hitinfo, range, layerMask))
         {
             if (hitinfo.transform != null)
@@ -94,6 +98,7 @@ public class CraftManual : MonoBehaviour
         {
             Instantiate(go_Prefab, hitinfo.point, Quaternion.identity);
             Destroy(go_Preview);
+            GameManager.isOpenCraftManual = false;
             isActivated = false;
             isPreviewActivated = false;
             go_Prefab = null;
@@ -108,6 +113,7 @@ public class CraftManual : MonoBehaviour
         if (isPreviewActivated)
             Destroy(go_Preview);
 
+        GameManager.isOpenCraftManual = false;
         isActivated = false;
         isPreviewActivated = false;
         go_Preview = null;
